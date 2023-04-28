@@ -1,5 +1,6 @@
 from itertools import product
-import math,sys
+import math
+import sys
 
 class Graduation:
 
@@ -32,29 +33,30 @@ class Graduation:
         self.max_days = int(total_number_of_days)
         self.max_absent_days = int(max_absent_days_in_streak)
         self.combinations_list =[]
+        self.limit_absent_cases =[]
         self.fail_cases = []
 
     def possible_combinations(self):
+        pattern_to_look_for= 'A'*(self.max_absent_days)
         possible_combinations = product(['P','A'],repeat=self.max_days)
         for possible_combination in possible_combinations:
-            self.combinations_list.append(''.join(possible_combination))
+            combination = ''.join(possible_combination)
+            if pattern_to_look_for in combination:
+                self.limit_absent_cases.append(combination)
+            else:
+                self.combinations_list.append(combination)
+             
         
     
     def valid_combinations(self):
-        pattern_to_look_for= 'A'*self.max_absent_days
         for combination in self.combinations_list:
-            
             if combination[-1]=='A':
                 self.fail_cases.append(combination)
-            elif pattern_to_look_for in combination[:-1]:
-                self.fail_cases.append(combination)
-            elif combination[-1*self.max_absent_days:] ==pattern_to_look_for:
-                self.fail_cases.append(combination)
+            
         
     def get_chances_of_graduation(self):
         self.possible_combinations()
         self.valid_combinations()
-
         return f"{len(self.fail_cases)}/{len(self.combinations_list)}"
 
 
