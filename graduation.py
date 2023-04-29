@@ -1,6 +1,7 @@
 # this approach works for values of total_number_of_days which is less than or around range of 20. any more and program slows down too much
 from itertools import product
-import math,sys
+import math
+import sys
 
 class Graduation:
 
@@ -33,6 +34,7 @@ class Graduation:
         self.max_days = int(total_number_of_days)
         self.max_absent_days = int(max_absent_days_in_streak)
         self.combinations_list =[]
+        self.limit_absent_cases =[]
         self.fail_cases = []
         self.limit_absent_cases = []
         self.fail_cases_count =self.max_combinations_count = 0
@@ -45,8 +47,7 @@ class Graduation:
             if pattern_to_look_for in combination:
                 self.limit_absent_cases.append(combination)
             else:
-                self.combinations_list.append(combination)
-        
+                self.combinations_list.append(combination)        
     
     def valid_combinations(self):
         for combination in self.combinations_list:
