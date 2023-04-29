@@ -1,3 +1,4 @@
+# this approach works for values of total_number_of_days which is less than or around range of 20. any more and program slows down too much
 from itertools import product
 import math,sys
 
@@ -33,30 +34,43 @@ class Graduation:
         self.max_absent_days = int(max_absent_days_in_streak)
         self.combinations_list =[]
         self.fail_cases = []
+        self.limit_absent_cases = []
+        self.fail_cases_count =self.max_combinations_count = 0
 
     def possible_combinations(self):
+        pattern_to_look_for= 'A'*(self.max_absent_days)
         possible_combinations = product(['P','A'],repeat=self.max_days)
         for possible_combination in possible_combinations:
-            self.combinations_list.append(''.join(possible_combination))
+            combination = ''.join(possible_combination)
+            if pattern_to_look_for in combination:
+                self.limit_absent_cases.append(combination)
+            else:
+                self.combinations_list.append(combination)
         
     
     def valid_combinations(self):
-        pattern_to_look_for= 'A'*self.max_absent_days
         for combination in self.combinations_list:
-            
             if combination[-1]=='A':
                 self.fail_cases.append(combination)
-            elif pattern_to_look_for in combination[:-1]:
-                self.fail_cases.append(combination)
-            elif combination[-1*self.max_absent_days:] ==pattern_to_look_for:
-                self.fail_cases.append(combination)
+            
         
     def get_chances_of_graduation(self):
         self.possible_combinations()
         self.valid_combinations()
-
         return f"{len(self.fail_cases)}/{len(self.combinations_list)}"
 
+    
+    def use_iteraror_to_speed_up(self):
+        pattern_to_look_for= 'A'*self.max_absent_days
+        possible_combinations = product(['P','A'],repeat=self.max_days)
+        for possible_combination in possible_combinations:
+            combination = ''.join(possible_combination)
+            if pattern_to_look_for not in combination:
+                self.max_combinations_count+=1
+                if possible_combination[-1] == 'A':
+                    self.fail_cases_count+=1
+
+        return f"{self.fail_cases_count}/{self.max_combinations_count}"
 
 if __name__ == "__main__":
     try:
@@ -67,6 +81,8 @@ if __name__ == "__main__":
     except Exception as e:
         print(e)
     else:
-        solution = Graduation(total_number_of_days = total_number_of_days ,max_absent_days_in_streak=max_absent_days_in_streak).get_chances_of_graduation()
-        print(f"The number of ways to attend classes over {total_number_of_days} days is {solution.split('/')[1]}")
-        print(f"The probability that you will miss your graduation ceremony is {solution.split('/')[0]}")
+        solution1 = Graduation(total_number_of_days = total_number_of_days ,max_absent_days_in_streak=max_absent_days_in_streak).get_chances_of_graduation()
+        solution2 = Graduation(total_number_of_days = total_number_of_days ,max_absent_days_in_streak=max_absent_days_in_streak).use_iteraror_to_speed_up()
+        print(solution1)
+        print(f"The number of ways to attend classes over {total_number_of_days} days is {solution1.split('/')[1]}")
+        print(f"The probability that you will miss your graduation ceremony is {solution1.split('/')[0]}")
